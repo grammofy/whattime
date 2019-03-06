@@ -3,7 +3,7 @@ whattime
 ========
 
 
-Add a short description here!
+Checking what kind of time a date is.
 
 
 Description
