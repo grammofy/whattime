@@ -10,6 +10,3 @@ pytest = "*"
 pytest-random = "*"
 mypy = "*"
 pytest-cov = "*"
-
-[packages]
-e1839a8 = {editable = true,path = "."}
