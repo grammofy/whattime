@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from typing import Set
 
 from .base import InfoBase
@@ -71,3 +73,7 @@ class DayTimeInfo(InfoBase):
     def _is_in_daytime(self, time_type: TimeType) -> bool:
         hour_range = self.__inverse_time_mapping__[time_type]
         return isinstance(hour_range, range) and self.date.hour in hour_range
+
+
+def day_time_info(date: datetime) -> DayTimeInfo:
+    return DayTimeInfo(date)

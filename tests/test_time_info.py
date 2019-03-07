@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from whattime import TimeType
-from whattime import time_info
+from whattime import whattime
 
 
 def test_time_info(monday: datetime):
     """Test time_info combines multiple info"""
 
     monday_noon = monday.replace(hour=12, minute=30)
-    info = time_info(monday_noon)
+    info = whattime(monday_noon)
 
     assert info.types == {TimeType.MONDAY, TimeType.WEEKDAY, TimeType.NOON}
 

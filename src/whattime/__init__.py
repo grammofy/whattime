@@ -3,15 +3,17 @@
 from pkg_resources import get_distribution, DistributionNotFound
 
 try:
-    # Change here if project is renamed and does not equal the package name
     dist_name = __name__
     __version__ = get_distribution(dist_name).version
 except DistributionNotFound:
     __version__ = 'unknown'
-finally:
-    del get_distribution, DistributionNotFound
 
-__all__ = ['whattime', 'day', 'week']
+__all__ = [
+    'whattime',
+    'TimeType',
+    'week_info',
+    'day_time_info'
+]
 
-from . import whattime
-from .whattime import *
+from .utils import whattime, week_info, day_time_info
+from .type import TimeType

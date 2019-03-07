@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Set
 
 from .type import TimeType
@@ -84,3 +85,7 @@ class WeekInfo(InfoBase):
         """Return whether the given datetime is a Sunday"""
 
         return self.date.isoweekday() == 7
+
+
+def week_info(date: datetime) -> WeekInfo:
+    return WeekInfo(date)

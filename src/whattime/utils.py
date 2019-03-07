@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Set
 
 from .day import DayTimeInfo
@@ -16,4 +17,13 @@ class TimeInfo(DayTimeInfo, WeekInfo):
         return self._types
 
 
-time_info = TimeInfo
+def whattime(date: datetime) -> TimeInfo:
+    return TimeInfo(date)
+
+
+def week_info(date: datetime) -> WeekInfo:
+    return WeekInfo(date)
+
+
+def day_time_info(date: datetime) -> DayTimeInfo:
+    return DayTimeInfo(date)
