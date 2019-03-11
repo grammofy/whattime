@@ -1,7 +1,6 @@
+from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Set
-
-from abc import ABC, abstractmethod
 
 from .type import TimeType
 

@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Set
 
-from .type import TimeType
 from .base import InfoBase
+from .type import TimeType
 
 
 class WeekInfo(InfoBase):
