@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from whattime import whattime
 
 # Asking for all types of time descriptors for a e.g. a monday afternoon:
@@ -25,5 +26,3 @@ print(info.is_afternoon)
 
 print(info.is_morning)
 # False
-
-

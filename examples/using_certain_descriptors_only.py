@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from whattime import week_info, day_time_info
 
 # Asking for week info only for a e.g. a monday afternoon:
@@ -32,7 +33,3 @@ print(info.is_evening)
 
 print(info.is_weekend)
 # AttributeError: 'DayTimeInfo' object has no attribute 'is_weekend'
-
-
-
-
