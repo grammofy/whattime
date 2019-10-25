@@ -80,3 +80,7 @@ Here’s how to contribute:
 * Create a new Pull Request
 
 Please try to add [Pytest tests](https://pytest.org/en/latest/getting-started.html) along with your new feature. This will ensure that your code does not break existing functionality and that your feature is working as expected.
+
+## License
+
+The software is available as open source under the terms of the [MIT License](https://github.com/grammofy/whattime/blob/master/LICENSE.txt).
