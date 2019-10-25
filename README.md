@@ -64,7 +64,7 @@ info.is_evening
 
 * Tests can be run with: 
   ```bash
-  pytest setup.py test
+  python setup.py test
   ```
 
 ## Contributing
