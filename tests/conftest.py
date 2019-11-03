@@ -7,6 +7,7 @@
     Read more about conftest.py under:
     https://pytest.org/latest/plugins.html
 """
+from collections import namedtuple
 from datetime import datetime, timedelta
 from typing import List
 
@@ -26,6 +27,11 @@ def today_noon(now: datetime) -> datetime:
 @pytest.fixture
 def monday(today_noon: datetime) -> datetime:
     return today_noon - timedelta(days=today_noon.weekday())
+
+
+@pytest.fixture
+def southern_winter_monday(today_noon: datetime) -> datetime:
+    return datetime(year=2020, month=8, day=3)
 
 
 @pytest.fixture
@@ -62,3 +68,12 @@ def sunday(monday: datetime) -> datetime:
 def days(monday: datetime, tuesday: datetime, wednesday: datetime, thursday: datetime,
          friday: datetime, saturday: datetime, sunday: datetime) -> List[datetime]:
     return [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+
+
+@pytest.fixture
+def months(now):
+    months = {date.strftime("%B").lower(): date for date in
+              (now.replace(month=n) for n in range(1, 13))}
+    Months = namedtuple('Months', list(months.keys()))
+
+    return Months(**months)

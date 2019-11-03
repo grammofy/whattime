@@ -1,22 +1,24 @@
 from datetime import datetime
-from typing import Set
+from typing import Set, Dict
 
 from .base import InfoBase
 from .type import TimeType
 
 
 class WeekInfo(InfoBase):
-    __mapping__ = {
-        'is_weekend': TimeType.WEEKEND,
-        'is_weekday': TimeType.WEEKDAY,
-        'is_monday': TimeType.MONDAY,
-        'is_tuesday': TimeType.TUESDAY,
-        'is_wednesday': TimeType.WEDNESDAY,
-        'is_thursday': TimeType.THURSDAY,
-        'is_friday': TimeType.FRIDAY,
-        'is_saturday': TimeType.SATURDAY,
-        'is_sunday': TimeType.SUNDAY
-    }
+    @property
+    def __mapping__(self) -> Dict[str, TimeType]:
+        return {
+            'is_weekend': TimeType.WEEKEND,
+            'is_weekday': TimeType.WEEKDAY,
+            'is_monday': TimeType.MONDAY,
+            'is_tuesday': TimeType.TUESDAY,
+            'is_wednesday': TimeType.WEDNESDAY,
+            'is_thursday': TimeType.THURSDAY,
+            'is_friday': TimeType.FRIDAY,
+            'is_saturday': TimeType.SATURDAY,
+            'is_sunday': TimeType.SUNDAY
+        }
 
     @property
     def types(self) -> Set[TimeType]:
