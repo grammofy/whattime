@@ -22,13 +22,14 @@ For quickly getting started, just import the `whattime` function and explore a d
 
 ```python
 from datetime import datetime
-from whattime import whattime
+from whattime import whattime, Hemisphere
 
 now = datetime.now()
-info = whattime(now)
+info = whattime(now, Hemisphere.SOUTHERN)
 
 info.is_weekday
 info.is_monday
+info.is_summer
 # ...
 ```
 
@@ -36,7 +37,7 @@ Besides checking all the time types you can also only check a certain category o
 
 ```python
 from datetime import datetime
-from whattime import week_info, day_time_info
+from whattime import week_info, day_time_info, season_info, Hemisphere
 
 now = datetime.now()
 
@@ -46,10 +47,16 @@ info.is_weekday
 info.is_monday
 # ...
 
-# There will only be properties available concerning the day time info  when using day_time_info():
+# There will only be properties available concerning the day time info when using day_time_info():
 info = day_time_info(now)
 info.is_afternoon
 info.is_evening
+# ...
+
+# There will only be properties available concerning the season info when using season_info():
+info = season_info(now, Hemisphere.SOUTHERN)
+info.is_spring
+info.is_summer
 # ...
 ```
 
