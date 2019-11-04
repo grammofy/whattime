@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    Dummy conftest.py for whattime.
 
-    If you don't know what this is for, just leave it empty.
-    Read more about conftest.py under:
-    https://pytest.org/latest/plugins.html
-"""
 from collections import namedtuple
 from datetime import datetime, timedelta
-from typing import List
+from typing import NamedTuple
 
 import pytest
 
@@ -35,45 +29,18 @@ def southern_winter_monday(today_noon: datetime) -> datetime:
 
 
 @pytest.fixture
-def tuesday(monday: datetime) -> datetime:
-    return monday + timedelta(days=1)
+def week(monday: datetime) -> NamedTuple:
+    days = {date.strftime("%A").lower(): date for date in
+            (monday + timedelta(days=n) for n in range(0, 7))}
+    Week = namedtuple('Week', days.keys())
+
+    return Week(**days)
 
 
 @pytest.fixture
-def wednesday(monday: datetime) -> datetime:
-    return monday + timedelta(days=2)
-
-
-@pytest.fixture
-def thursday(monday: datetime) -> datetime:
-    return monday + timedelta(days=3)
-
-
-@pytest.fixture
-def friday(monday: datetime) -> datetime:
-    return monday + timedelta(days=4)
-
-
-@pytest.fixture
-def saturday(monday: datetime) -> datetime:
-    return monday + timedelta(days=5)
-
-
-@pytest.fixture
-def sunday(monday: datetime) -> datetime:
-    return monday + timedelta(days=6)
-
-
-@pytest.fixture
-def days(monday: datetime, tuesday: datetime, wednesday: datetime, thursday: datetime,
-         friday: datetime, saturday: datetime, sunday: datetime) -> List[datetime]:
-    return [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
-
-
-@pytest.fixture
-def months(now):
+def months(now: datetime) -> NamedTuple:
     months = {date.strftime("%B").lower(): date for date in
               (now.replace(month=n) for n in range(1, 13))}
-    Months = namedtuple('Months', list(months.keys()))
+    Months = namedtuple('Months', months.keys())
 
     return Months(**months)
