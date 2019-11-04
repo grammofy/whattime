@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from typing import NamedTuple
 
 import pytest
+from whattime import TimeType
 
 
 @pytest.fixture(scope='session')
@@ -26,6 +27,15 @@ def monday(today_noon: datetime) -> datetime:
 @pytest.fixture
 def southern_winter_monday(today_noon: datetime) -> datetime:
     return datetime(year=2020, month=8, day=3)
+
+
+@pytest.fixture
+def day(monday: datetime) -> NamedTuple:
+    time = monday.replace(hour=0, minute=0)
+    hours = {'hours_{n}'.format(n=n): time + timedelta(hours=n) for n in range(0, 24)}
+    Day = namedtuple('Day', hours.keys())
+
+    return Day(**hours)
 
 
 @pytest.fixture

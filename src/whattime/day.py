@@ -10,12 +10,12 @@ class DayTimeInfo(InfoBase):
     @property
     def __mapping__(self) -> Dict[Tuple, TimeType]:
         return {
-            (0, 1, 2, 3, 4, 23, 24): TimeType.NIGHT,
+            (0, 1, 2, 3, 4, 23): TimeType.NIGHT,
             (5, 6, 7, 8, 9): TimeType.MORNING,
             (10, 11): TimeType.MIDMORNING,
-            (12, 13): TimeType.NOON,
-            (14, 15, 16, 17, 18): TimeType.AFTERNOON,
-            (19, 20, 21, 22): TimeType.EVENING
+            (12,): TimeType.NOON,
+            (13, 14, 15, 16, 17): TimeType.AFTERNOON,
+            (18, 19, 20, 21, 22): TimeType.EVENING
         }
 
     @property
