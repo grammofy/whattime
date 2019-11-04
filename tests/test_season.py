@@ -1,5 +1,4 @@
-from whattime import Hemisphere
-from whattime import season_info
+from whattime import Hemisphere, season_info
 
 
 # Spring:

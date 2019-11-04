@@ -1,8 +1,6 @@
 from datetime import datetime
 
-from whattime import Hemisphere
-from whattime import TimeType
-from whattime import whattime
+from whattime import Hemisphere, TimeType, whattime
 
 
 def test_time_info(southern_winter_monday: datetime):

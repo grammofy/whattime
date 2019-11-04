@@ -1,9 +1,8 @@
-from whattime import TimeType
-from whattime import week_info
+from whattime import TimeType, week_info
 
 
 def test_time_type_state_is_weekday(week):
-    """ Test week_info is_weekday of given datetime """
+    """Test week_info is_weekday of given datetime"""
 
     assert week_info(week.monday).is_weekday is True
     assert week_info(week.tuesday).is_weekday is True
@@ -15,7 +14,7 @@ def test_time_type_state_is_weekday(week):
 
 
 def test_time_type_state_is_weekend(week):
-    """ Test week_info is_weekday of given datetime """
+    """Test week_info is_weekday of given datetime"""
 
     assert week_info(week.monday).is_weekend is False
     assert week_info(week.tuesday).is_weekend is False
@@ -27,7 +26,7 @@ def test_time_type_state_is_weekend(week):
 
 
 def test_time_type_state_certain_day(week):
-    """ Test week_info days of given datetime """
+    """Test week_info days of given datetime"""
 
     for day in week._asdict().values():
         assert week_info(day).is_monday is (day is week.monday)
@@ -40,7 +39,7 @@ def test_time_type_state_certain_day(week):
 
 
 def test_time_type_state_types(week):
-    """ Test fitting types for the given datetime """
+    """Test fitting types for the given datetime"""
 
     assert week_info(week.monday).types == {TimeType.MONDAY, TimeType.WEEKDAY}
     assert week_info(week.tuesday).types == {TimeType.TUESDAY, TimeType.WEEKDAY}
