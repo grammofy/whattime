@@ -11,9 +11,12 @@ except DistributionNotFound:
 __all__ = [
     'whattime',
     'TimeType',
+    'Hemisphere',
+    'SeasonType',
     'week_info',
-    'day_time_info'
+    'day_time_info',
+    'season_info'
 ]
 
-from .utils import whattime, week_info, day_time_info
-from .type import TimeType
+from .utils import whattime, week_info, day_time_info, season_info
+from .type import TimeType, Hemisphere, SeasonType

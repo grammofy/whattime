@@ -20,7 +20,20 @@ class TimeType(Enum):
     EVENING = 'evening'
     NIGHT = 'night'
 
-    SPRINT = 'spring'
+    SPRING = 'spring'
     SUMMER = 'summer'
     AUTUMN = 'autumn'
     WINTER = 'winter'
+
+    WET_SEASON = 'wet season'
+    DRY_SEASON = 'dry season'
+
+
+class Hemisphere(Enum):
+    NORTHERN = 'northern'
+    SOUTHERN = 'southern'
+
+
+class SeasonType(Enum):
+    NONE = 'NONE'
+    TROPICAL = 'tropical'

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from whattime import week_info, day_time_info
+from whattime import week_info, day_time_info, season_info, Hemisphere
 
 # Asking for week info only for a e.g. a monday afternoon:
 now = datetime.now()
@@ -33,3 +33,25 @@ print(info.is_evening)
 
 print(info.is_weekend)
 # AttributeError: 'DayTimeInfo' object has no attribute 'is_weekend'
+
+
+# Asking for the season e.g. in summer on the southern hemisphere:
+info = season_info(now, Hemisphere.SOUTHERN)
+
+print(info.types)
+# {<TimeType.SUMMER: 'summer'>}
+
+print(info.is_spring)
+# False
+
+print(info.is_summer)
+# True
+
+print(info.is_autumn)
+# False
+
+print(info.is_winter)
+# False
+
+print(info.is_monday)
+# AttributeError: 'SeasonInfo' object has no attribute 'is_monday'
