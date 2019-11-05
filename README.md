@@ -1,8 +1,9 @@
 # whattime
 
-Checking of what kind a datetime object is.
+[![PyPI version](https://badge.fury.io/py/whattime.svg)](https://badge.fury.io/py/whattime)
+[![Build Status](https://travis-ci.org/grammofy/whattime.svg?branch=master)](https://travis-ci.org/grammofy/whattime)
 
-whattime let’s you explore of what kind a certain datetime object is, if it e.g. is on a weekend, or in the evening.
+Checking of what kind a datetime object is: it let’s you explore whether a certain datetime object is e.g. a Sunday morning in summer or a Wednesday night in winter. It also consideres hemispheres.
 
 ## Getting started
 
