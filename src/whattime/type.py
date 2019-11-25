@@ -20,11 +20,13 @@ class TimeType(Enum):
     EVENING = 'evening'
     NIGHT = 'night'
 
+    # Gregorian seasons
     SPRING = 'spring'
     SUMMER = 'summer'
     AUTUMN = 'autumn'
     WINTER = 'winter'
 
+    # Tropical seasons
     WET_SEASON = 'wet season'
     DRY_SEASON = 'dry season'
 
@@ -35,5 +37,12 @@ class Hemisphere(Enum):
 
 
 class SeasonType(Enum):
-    NONE = 'NONE'
+    GREGORIAN = 'gregorian'
     TROPICAL = 'tropical'
+    HINDU = 'hindu'
+    BENGALI = 'bengali'
+    TAMIL = 'tamil'
+    THAI = 'thai'
+    NOONGAR = 'noongar'
+    CREE = 'cree'
+

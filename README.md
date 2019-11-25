@@ -34,6 +34,11 @@ info.is_summer
 # ...
 ```
 
+By default `SeasonType.GREGORIAN` is used to compile the season info. You can also pass other `SeasonType`s to `whattime` explicitly. Available types are:
+
+* `SeasonType.GREGORIAN`
+* `SeasonType.TROPICAL`
+
 Besides checking all the time types you can also only check a certain category of types, e.g. info about the current day, or the time within a day seperately (also see the [Single info type example](https://github.com/grammofy/whattime/blob/master/examples/using_certain_descriptors_only.py)).
 
 ```python

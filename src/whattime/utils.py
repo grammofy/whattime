@@ -4,7 +4,7 @@ from typing import Set, Dict, Type, Union, Tuple
 
 from .day import DayTimeInfo
 from .season import SeasonInfo
-from .type import TimeType, Hemisphere
+from .type import TimeType, Hemisphere, SeasonType
 from .week import WeekInfo
 
 
@@ -46,5 +46,6 @@ def day_time_info(date: datetime) -> DayTimeInfo:
     return DayTimeInfo(date)
 
 
-def season_info(date: datetime, hemisphere: Hemisphere) -> SeasonInfo:
-    return SeasonInfo(date, hemisphere)
+def season_info(date: datetime, hemisphere: Hemisphere,
+                season_type: SeasonType = SeasonType.GREGORIAN) -> SeasonInfo:
+    return SeasonInfo(date, hemisphere, season_type)

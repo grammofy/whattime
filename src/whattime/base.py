@@ -25,9 +25,5 @@ class LocationBasedInfoBase(InfoBase):
         super().__init__(date)
 
     @abstractmethod
-    def __inverse_mapping__(self) -> Dict[TimeType, Tuple]:
-        pass
-
-    @abstractmethod
     def types(self) -> Set[TimeType]:
         pass
