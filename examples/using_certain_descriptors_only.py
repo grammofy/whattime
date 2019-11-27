@@ -36,7 +36,7 @@ print(info.is_weekend)
 
 
 # Asking for the season e.g. in summer on the southern hemisphere:
-info = season_info(now, Hemisphere.SOUTHERN)
+info = season_info(now, hemisphere=Hemisphere.SOUTHERN)
 
 print(info.types)
 # {<TimeType.SUMMER: 'summer'>}

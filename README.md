@@ -26,7 +26,7 @@ from datetime import datetime
 from whattime import whattime, Hemisphere
 
 now = datetime.now()
-info = whattime(now, Hemisphere.SOUTHERN)
+info = whattime(now, hemisphere=Hemisphere.SOUTHERN)
 
 info.is_weekday
 info.is_monday
@@ -36,8 +36,11 @@ info.is_summer
 
 By default `SeasonType.GREGORIAN` is used to compile the season info. You can also pass other `SeasonType`s to `whattime` explicitly. Available types are:
 
-* `SeasonType.GREGORIAN`
-* `SeasonType.TROPICAL`
+* `SeasonType.GREGORIAN` *(hemisphere dependent)*
+* `SeasonType.TROPICAL` *(hemisphere dependent)*
+* `SeasonType.NOONGAR`
+* `SeasonType.CREE`
+
 
 Besides checking all the time types you can also only check a certain category of types, e.g. info about the current day, or the time within a day seperately (also see the [Single info type example](https://github.com/grammofy/whattime/blob/master/examples/using_certain_descriptors_only.py)).
 
@@ -60,7 +63,7 @@ info.is_evening
 # ...
 
 # There will only be properties available concerning the season info when using season_info():
-info = season_info(now, Hemisphere.SOUTHERN)
+info = season_info(now, hemisphere=Hemisphere.SOUTHERN)
 info.is_spring
 info.is_summer
 # ...

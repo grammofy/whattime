@@ -4,7 +4,7 @@ from whattime import whattime, Hemisphere
 
 # Asking for all types of time descriptors for a e.g. a monday afternoon in summer time on the southern hemisphere:
 now = datetime.now()
-info = whattime(now, Hemisphere.SOUTHERN)
+info = whattime(now, hemisphere=Hemisphere.SOUTHERN)
 
 print(info.types)
 # {<TimeType.WEEKDAY: 'weekday'>, <TimeType.MONDAY: 'monday'>, ...}
