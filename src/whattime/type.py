@@ -30,6 +30,22 @@ class TimeType(Enum):
     WET_SEASON = 'wet season'
     DRY_SEASON = 'dry season'
 
+    # Noongar seasons
+    BIRAK = 'birak'
+    BUNURU = 'bunuru'
+    DJERAN = 'djeran'
+    MAKURU = 'makuru'
+    DJILBA = 'djilba'
+    KAMBARANG = 'kambarang'
+
+    # Cree
+    PIPON = 'pipon'
+    SEKWUN = 'sekwun'
+    MITHOSKUMIN = 'mithoskumin'
+    NEPIN = 'nepin'
+    TUKWAKIN = 'tukwakin'
+    MIKISKAW = 'mikiskaw'
+
 
 class Hemisphere(Enum):
     NORTHERN = 'northern'

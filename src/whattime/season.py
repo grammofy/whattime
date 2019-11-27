@@ -1,10 +1,9 @@
 import inspect
-import re
 import sys
 from abc import ABC, abstractmethod
-from copy import copy
 from datetime import datetime
 from typing import Set, Dict, Tuple, Type, Union
+from warnings import warn
 
 from .base import LocationBasedInfoBase
 from .type import Hemisphere, TimeType, SeasonType
@@ -130,25 +129,132 @@ class TropicalMapping(LocationDependentMapping):
         return self._is_in_season(TimeType.DRY_SEASON)
 
 
+class NoongarMapping(Mapping):
+    __mapping__ = {
+        (12, 1): TimeType.BIRAK,
+        (2, 3): TimeType.BUNURU,
+        (4, 5): TimeType.DJERAN,
+        (6, 7): TimeType.MAKURU,
+        (8, 9): TimeType.DJILBA,
+        (10, 11): TimeType.KAMBARANG
+    }
+
+    @property
+    def is_birak(self):
+        """Return whether the given date is in Birak"""
+
+        return self._is_in_season(TimeType.BIRAK)
+
+    @property
+    def is_bunuru(self):
+        """Return whether the given date is in Bunuru"""
+
+        return self._is_in_season(TimeType.BUNURU)
+
+    @property
+    def is_djeran(self):
+        """Return whether the given date is in Djeran"""
+
+        return self._is_in_season(TimeType.DJERAN)
+
+    @property
+    def is_makuru(self):
+        """Return whether the given date is in Makuru"""
+
+        return self._is_in_season(TimeType.MAKURU)
+
+    @property
+    def is_djilba(self):
+        """Return whether the given date is in Djilba"""
+
+        return self._is_in_season(TimeType.DJILBA)
+
+    @property
+    def is_kambarang(self):
+        """Return whether the given date is in Kambarang"""
+
+        return self._is_in_season(TimeType.KAMBARANG)
+
+
+class CreeMapping(Mapping):
+    __mapping__ = {
+        (1, 2): TimeType.PIPON,
+        (3, 4): TimeType.SEKWUN,
+        (5, 6): TimeType.MITHOSKUMIN,
+        (7, 8): TimeType.NEPIN,
+        (9, 10): TimeType.TUKWAKIN,
+        (11, 12): TimeType.MIKISKAW
+    }
+
+    @property
+    def is_pipon(self):
+        """Return whether the given date is in Pipon (Winter)"""
+
+        return self._is_in_season(TimeType.PIPON)
+
+    @property
+    def is_sekwun(self):
+        """Return whether the given date is in Sekwun (Break-up)"""
+
+        return self._is_in_season(TimeType.SEKWUN)
+
+    @property
+    def is_mithoskumin(self):
+        """Return whether the given date is in Mithoskumin (Spring)"""
+
+        return self._is_in_season(TimeType.MITHOSKUMIN)
+
+    @property
+    def is_nepin(self):
+        """Return whether the given date is in Nepin (Summer)"""
+
+        return self._is_in_season(TimeType.NEPIN)
+
+    @property
+    def is_tukwakin(self):
+        """Return whether the given date is in Tukwakin (Autumn)"""
+
+        return self._is_in_season(TimeType.TUKWAKIN)
+
+    @property
+    def is_mikiskaw(self):
+        """Return whether the given date is in Mikiskaw (Freeze-up)"""
+
+        return self._is_in_season(TimeType.MIKISKAW)
+
+
 class SeasonInfo(LocationBasedInfoBase):
     __mapping__ = {}
 
-    def __init__(self, date: datetime, hemisphere: Hemisphere,
-                 season_type: SeasonType = SeasonType.GREGORIAN):
+    def __init__(self, date: datetime,
+                 season_type: SeasonType = SeasonType.GREGORIAN,
+                 hemisphere: Hemisphere = None):
         self.season_type = season_type
         super().__init__(date, hemisphere)
         self._setup_properties()
 
     def _setup_properties(self):
+        mapping_object = self._mapping_object
+        is_location_dependent = isinstance(mapping_object, LocationDependentMapping)
+        is_hemisphere_available = isinstance(self.hemisphere, Hemisphere)
+
+        if is_location_dependent and not is_hemisphere_available:
+            message = "The hemisphere must be set when using SeasonType {}."
+            raise ValueError(message.format(self.season_type))
+
+        if not is_location_dependent and is_hemisphere_available:
+            message = "Setting the hemisphere has no effect when using SeasonType {}."
+            warn(message.format(self.season_type))
+
         def predicate(prop):
-            return inspect.ismemberdescriptor and isinstance(prop, property)
+            return inspect.isdatadescriptor and isinstance(prop, property)
 
         properties = inspect.getmembers(self._mapping_class, predicate)
 
         for (name, _) in properties:
-            setattr(self, name, getattr(self._mapping_object, name))
+            setattr(self, name, getattr(mapping_object, name))
 
-        self.__mapping__.update(self._mapping_object.mapping)
+        self.__mapping__.update(mapping_object.mapping)
 
     @property
     def _mapping_object(self) -> Mapping:
@@ -178,6 +284,7 @@ class SeasonInfo(LocationBasedInfoBase):
         return self._types
 
 
-def season_info(date: datetime, hemisphere: Hemisphere,
-                season_type: SeasonType = SeasonType.GREGORIAN) -> SeasonInfo:
-    return SeasonInfo(date, hemisphere, season_type)
+def season_info(date: datetime,
+                season_type: SeasonType = SeasonType.GREGORIAN,
+                hemisphere: Hemisphere = None) -> SeasonInfo:
+    return SeasonInfo(date, season_type, hemisphere)

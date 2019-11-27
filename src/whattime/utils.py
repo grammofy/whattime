@@ -2,10 +2,10 @@ import inspect
 from datetime import datetime
 from typing import Set, Dict, Type, Union, Tuple
 
-from .day import DayTimeInfo
-from .season import SeasonInfo
+from .day import DayTimeInfo, day_time_info
+from .season import SeasonInfo, season_info
 from .type import TimeType, Hemisphere, SeasonType
-from .week import WeekInfo
+from .week import WeekInfo, week_info
 
 
 class TimeInfo(DayTimeInfo, WeekInfo, SeasonInfo):
@@ -34,18 +34,7 @@ class TimeInfo(DayTimeInfo, WeekInfo, SeasonInfo):
         return {arg: self.__getattribute__(arg) for arg in args if arg != 'self'}
 
 
-def whattime(date: datetime, hemisphere: Hemisphere) -> TimeInfo:
-    return TimeInfo(date, hemisphere)
-
-
-def week_info(date: datetime) -> WeekInfo:
-    return WeekInfo(date)
-
-
-def day_time_info(date: datetime) -> DayTimeInfo:
-    return DayTimeInfo(date)
-
-
-def season_info(date: datetime, hemisphere: Hemisphere,
-                season_type: SeasonType = SeasonType.GREGORIAN) -> SeasonInfo:
-    return SeasonInfo(date, hemisphere, season_type)
+def whattime(date: datetime,
+             season_type: SeasonType = SeasonType.GREGORIAN,
+             hemisphere: Hemisphere = None) -> TimeInfo:
+    return TimeInfo(date, season_type, hemisphere)

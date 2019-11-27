@@ -1,13 +1,14 @@
 from datetime import datetime
 
-from whattime import Hemisphere, TimeType, whattime
+from whattime import Hemisphere, TimeType, whattime, SeasonType
+from whattime.utils import TimeInfo
 
 
 def test_time_info(southern_winter_monday: datetime):
-    """Test time_info combines multiple info"""
+    """Test TimeInfo combines multiple info"""
 
     monday_noon = southern_winter_monday.replace(hour=12, minute=30)
-    info = whattime(monday_noon, Hemisphere.SOUTHERN)
+    info = TimeInfo(monday_noon, hemisphere=Hemisphere.SOUTHERN)
 
     assert info.types == {TimeType.MONDAY, TimeType.WEEKDAY, TimeType.NOON, TimeType.WINTER}
 
@@ -32,3 +33,14 @@ def test_time_info(southern_winter_monday: datetime):
     assert info.is_summer is False
     assert info.is_autumn is False
     assert info.is_winter is True
+
+
+def test_time_info_with_custom_season_type(southern_winter_monday: datetime):
+    """Test TimeInfo allows to adjust the season type"""
+
+    monday_noon = southern_winter_monday.replace(hour=12, minute=30)
+    info = TimeInfo(monday_noon, SeasonType.TROPICAL, Hemisphere.SOUTHERN)
+
+    assert info.types == {TimeType.MONDAY, TimeType.WEEKDAY, TimeType.NOON, TimeType.DRY_SEASON}
+    assert info.is_wet_season is False
+    assert info.is_dry_season is True
