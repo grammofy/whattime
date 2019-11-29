@@ -60,15 +60,9 @@ class Mapping:
     def inverse_mapping(self) -> Dict[TimeType, Tuple]:
         return {v: k for k, v in self.mapping.items()}
 
-    def _is_in_season(self, time_type: TimeType) -> bool:
+    def is_of_time_type(self, time_type: TimeType) -> bool:
         date_range = self.inverse_mapping[time_type]
-
-        if all(isinstance(month, int) for month in date_range):
-            return self.date.month in date_range
-        elif all(isinstance(item, _Interval) for item in date_range):
-            return any(self._is_in_interval(interval) for interval in date_range)
-        else:
-            return False
+        return any(self._is_in_interval(interval) for interval in date_range)
 
     def _is_in_interval(self, interval: _Interval) -> bool:
         current_date = self.date.date().replace(year=interval.start.year)
@@ -100,209 +94,209 @@ class GregorianMapping(LocationDependentMapping):
     """Mapping for the seasons based on the Gregorian calendar"""
 
     __northern_mapping__ = {
-        (1, 2, 12): TimeType.WINTER,  # Jan, Feb, Dec
-        (3, 4, 5): TimeType.SPRING,  # Mar, Apr, May
-        (6, 7, 8): TimeType.SUMMER,  # Jun, Jul, Aug
-        (9, 10, 11): TimeType.AUTUMN,  # Sep, Oct, Nov
+        (_I((1, 1), (29, 2)), _I((1, 12), (31, 12))): TimeType.WINTER,  # Jan, Feb, Dec
+        (_I((1, 3), (31, 5)),): TimeType.SPRING,  # Mar, Apr, May
+        (_I((1, 6), (31, 8)),): TimeType.SUMMER,  # Jun, Jul, Aug
+        (_I((1, 9), (30, 11)),): TimeType.AUTUMN,  # Sep, Oct, Nov
     }
 
     __southern_mapping__ = {
-        (1, 2, 12): TimeType.SUMMER,  # Jan, Feb, Dec
-        (3, 4, 5): TimeType.AUTUMN,  # Mar, Apr, May
-        (6, 7, 8): TimeType.WINTER,  # Jun, Jul, Aug
-        (9, 10, 11): TimeType.SPRING,  # Sep, Oct, Nov
+        (_I((1, 1), (29, 2)), _I((1, 12), (31, 12))): TimeType.SUMMER,  # Jan, Feb, Dec
+        (_I((1, 3), (31, 5)),): TimeType.AUTUMN,  # Mar, Apr, May
+        (_I((1, 6), (31, 8)),): TimeType.WINTER,  # Jun, Jul, Aug
+        (_I((1, 9), (30, 11)),): TimeType.SPRING,  # Sep, Oct, Nov
     }
 
     @lazy_property
     def is_spring(self) -> bool:
         """Return whether the given date is in spring on the given hemisphere"""
 
-        return self._is_in_season(TimeType.SPRING)
+        return self.is_of_time_type(TimeType.SPRING)
 
     @lazy_property
     def is_summer(self) -> bool:
         """Return whether the given date is in summer on the given hemisphere"""
 
-        return self._is_in_season(TimeType.SUMMER)
+        return self.is_of_time_type(TimeType.SUMMER)
 
     @lazy_property
     def is_autumn(self) -> bool:
         """Return whether the given date is in autumn on the given hemisphere"""
 
-        return self._is_in_season(TimeType.AUTUMN)
+        return self.is_of_time_type(TimeType.AUTUMN)
 
     @lazy_property
     def is_winter(self) -> bool:
         """Return whether the given date is in winter on the given hemisphere"""
 
-        return self._is_in_season(TimeType.WINTER)
+        return self.is_of_time_type(TimeType.WINTER)
 
 
 class TropicalMapping(LocationDependentMapping):
     """Mapping for seasons based on tropical areas"""
 
     __northern_mapping__ = {
-        (11, 12, 1, 2, 3, 4): TimeType.DRY_SEASON,  # Nov - Apr
-        (5, 6, 7, 8, 9, 10): TimeType.WET_SEASON,  # May - Oct
+        (_I((1, 11), (31, 12)), _I((1, 1), (30, 4))): TimeType.DRY_SEASON,  # Nov - Apr
+        (_I((1, 5), (31, 10)),): TimeType.WET_SEASON,  # May - Oct
     }
 
     __southern_mapping__ = {
-        (11, 12, 1, 2, 3, 4): TimeType.WET_SEASON,  # Nov - Apr
-        (5, 6, 7, 8, 9, 10): TimeType.DRY_SEASON,  # May - Oct
+        (_I((1, 11), (31, 12)), _I((1, 1), (30, 4))): TimeType.WET_SEASON,  # Nov - Apr
+        (_I((1, 5), (31, 10)),): TimeType.DRY_SEASON,  # May - Oct
     }
 
     @lazy_property
     def is_wet_season(self):
         """Return whether the given date is in the wet season"""
 
-        return self._is_in_season(TimeType.WET_SEASON)
+        return self.is_of_time_type(TimeType.WET_SEASON)
 
     @lazy_property
     def is_dry_season(self):
         """Return whether the given date is in the dry season"""
 
-        return self._is_in_season(TimeType.DRY_SEASON)
+        return self.is_of_time_type(TimeType.DRY_SEASON)
 
 
 class NoongarMapping(Mapping):
     __mapping__ = {
-        (12, 1): TimeType.BIRAK,
-        (2, 3): TimeType.BUNURU,
-        (4, 5): TimeType.DJERAN,
-        (6, 7): TimeType.MAKURU,
-        (8, 9): TimeType.DJILBA,
-        (10, 11): TimeType.KAMBARANG
+        (_I((1, 12), (31, 12)), _I((1, 1), (31, 1)),): TimeType.BIRAK,
+        (_I((1, 2), (31, 3)),): TimeType.BUNURU,
+        (_I((1, 4), (31, 5)),): TimeType.DJERAN,
+        (_I((1, 6), (31, 7)),): TimeType.MAKURU,
+        (_I((1, 8), (30, 9)),): TimeType.DJILBA,
+        (_I((1, 10), (30, 11)),): TimeType.KAMBARANG
     }
 
     @lazy_property
     def is_birak(self):
         """Return whether the given date is in Birak"""
 
-        return self._is_in_season(TimeType.BIRAK)
+        return self.is_of_time_type(TimeType.BIRAK)
 
     @lazy_property
     def is_bunuru(self):
         """Return whether the given date is in Bunuru"""
 
-        return self._is_in_season(TimeType.BUNURU)
+        return self.is_of_time_type(TimeType.BUNURU)
 
     @lazy_property
     def is_djeran(self):
         """Return whether the given date is in Djeran"""
 
-        return self._is_in_season(TimeType.DJERAN)
+        return self.is_of_time_type(TimeType.DJERAN)
 
     @lazy_property
     def is_makuru(self):
         """Return whether the given date is in Makuru"""
 
-        return self._is_in_season(TimeType.MAKURU)
+        return self.is_of_time_type(TimeType.MAKURU)
 
     @lazy_property
     def is_djilba(self):
         """Return whether the given date is in Djilba"""
 
-        return self._is_in_season(TimeType.DJILBA)
+        return self.is_of_time_type(TimeType.DJILBA)
 
     @lazy_property
     def is_kambarang(self):
         """Return whether the given date is in Kambarang"""
 
-        return self._is_in_season(TimeType.KAMBARANG)
+        return self.is_of_time_type(TimeType.KAMBARANG)
 
 
 class CreeMapping(Mapping):
     __mapping__ = {
-        (1, 2): TimeType.PIPON,
-        (3, 4): TimeType.SEKWUN,
-        (5, 6): TimeType.MITHOSKUMIN,
-        (7, 8): TimeType.NEPIN,
-        (9, 10): TimeType.TUKWAKIN,
-        (11, 12): TimeType.MIKISKAW
+        (_I((1, 1), (29, 2)),): TimeType.PIPON,
+        (_I((1, 3), (30, 4)),): TimeType.SEKWUN,
+        (_I((1, 5), (30, 6)),): TimeType.MITHOSKUMIN,
+        (_I((1, 7), (31, 8)),): TimeType.NEPIN,
+        (_I((1, 9), (31, 10)),): TimeType.TUKWAKIN,
+        (_I((1, 11), (31, 12)),): TimeType.MIKISKAW
     }
 
     @lazy_property
     def is_pipon(self):
         """Return whether the given date is in Pipon (Winter)"""
 
-        return self._is_in_season(TimeType.PIPON)
+        return self.is_of_time_type(TimeType.PIPON)
 
     @lazy_property
     def is_sekwun(self):
         """Return whether the given date is in Sekwun (Break-up)"""
 
-        return self._is_in_season(TimeType.SEKWUN)
+        return self.is_of_time_type(TimeType.SEKWUN)
 
     @lazy_property
     def is_mithoskumin(self):
         """Return whether the given date is in Mithoskumin (Spring)"""
 
-        return self._is_in_season(TimeType.MITHOSKUMIN)
+        return self.is_of_time_type(TimeType.MITHOSKUMIN)
 
     @lazy_property
     def is_nepin(self):
         """Return whether the given date is in Nepin (Summer)"""
 
-        return self._is_in_season(TimeType.NEPIN)
+        return self.is_of_time_type(TimeType.NEPIN)
 
     @lazy_property
     def is_tukwakin(self):
         """Return whether the given date is in Tukwakin (Autumn)"""
 
-        return self._is_in_season(TimeType.TUKWAKIN)
+        return self.is_of_time_type(TimeType.TUKWAKIN)
 
     @lazy_property
     def is_mikiskaw(self):
         """Return whether the given date is in Mikiskaw (Freeze-up)"""
 
-        return self._is_in_season(TimeType.MIKISKAW)
+        return self.is_of_time_type(TimeType.MIKISKAW)
 
 
 class HinduMapping(Mapping):
     __mapping__ = {
-        (_I(a=(15, 3), b=(14, 5)),): TimeType.VASANTA,
-        (_I(a=(15, 5), b=(14, 7)),): TimeType.GREESHMA,
-        (_I(a=(15, 7), b=(14, 9)),): TimeType.VARSHA,
-        (_I(a=(15, 9), b=(14, 11)),): TimeType.SHARAD,
-        (_I(a=(15, 11), b=(31, 12)), _I(a=(1, 1), b=(14, 1))): TimeType.HEMANTA,
-        (_I(a=(15, 1), b=(14, 3)),): TimeType.SHISHIRA,
+        (_I((15, 3), (14, 5)),): TimeType.VASANTA,
+        (_I((15, 5), (14, 7)),): TimeType.GREESHMA,
+        (_I((15, 7), (14, 9)),): TimeType.VARSHA,
+        (_I((15, 9), (14, 11)),): TimeType.SHARAD,
+        (_I((15, 11), (31, 12)), _I((1, 1), (14, 1))): TimeType.HEMANTA,
+        (_I((15, 1), (14, 3)),): TimeType.SHISHIRA,
     }
 
     @lazy_property
     def is_vasanta(self):
         """Return whether the given date is in Vasanta (Spring)"""
 
-        return self._is_in_season(TimeType.VASANTA)
+        return self.is_of_time_type(TimeType.VASANTA)
 
     @lazy_property
     def is_greeshma(self):
         """Return whether the given date is in Greeshma (Summer)"""
 
-        return self._is_in_season(TimeType.GREESHMA)
+        return self.is_of_time_type(TimeType.GREESHMA)
 
     @lazy_property
     def is_varsha(self):
         """Return whether the given date is in Varsha (Monsoon)"""
 
-        return self._is_in_season(TimeType.VARSHA)
+        return self.is_of_time_type(TimeType.VARSHA)
 
     @lazy_property
     def is_sharad(self):
         """Return whether the given date is in Sharad (Autumn)"""
 
-        return self._is_in_season(TimeType.SHARAD)
+        return self.is_of_time_type(TimeType.SHARAD)
 
     @lazy_property
     def is_hemanta(self):
         """Return whether the given date is in Hemanta (Early Winter)"""
 
-        return self._is_in_season(TimeType.HEMANTA)
+        return self.is_of_time_type(TimeType.HEMANTA)
 
     @lazy_property
     def is_shishira(self):
         """Return whether the given date is in Shishira (Prevernal or Late Winter)"""
 
-        return self._is_in_season(TimeType.SHISHIRA)
+        return self.is_of_time_type(TimeType.SHISHIRA)
 
 
 class SeasonInfo(LocationBasedInfoBase):
@@ -357,10 +351,8 @@ class SeasonInfo(LocationBasedInfoBase):
         """Return a set of fitting time types for the given datetime"""
 
         if not self._types:
-            month = self.date.month
-
-            for month_range, time_type in self._mapping_object.mapping.items():
-                if month in month_range:
+            for time_type in self._mapping_object.mapping.values():
+                if self._mapping_object.is_of_time_type(time_type):
                     self._types.add(time_type)
 
         return self._types
