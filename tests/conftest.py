@@ -50,7 +50,7 @@ def week(monday: datetime) -> NamedTuple:
 @pytest.fixture
 def months(now: datetime) -> NamedTuple:
     months = {date.strftime("%B").lower(): date for date in
-              (now.replace(month=n) for n in range(1, 13))}
+              (now.replace(month=n, day=1) for n in range(1, 13))}
     Months = namedtuple('Months', months.keys())
 
     return Months(**months)
