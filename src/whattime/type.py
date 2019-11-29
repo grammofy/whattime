@@ -46,6 +46,14 @@ class TimeType(Enum):
     TUKWAKIN = 'tukwakin'
     MIKISKAW = 'mikiskaw'
 
+    # Hindu
+    VASANTA = 'vasanta'
+    GREESHMA = 'greeshma'
+    VARSHA = 'varsha'
+    SHARAD = 'sharad'
+    HEMANTA = 'hemanta'
+    SHISHIRA = 'shishira'
+
 
 class Hemisphere(Enum):
     NORTHERN = 'northern'

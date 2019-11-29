@@ -1,7 +1,7 @@
 import inspect
 import sys
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, date
 from typing import Set, Dict, Tuple, Type, Union
 from warnings import warn
 
@@ -9,6 +9,31 @@ from lazy import lazy as lazy_property
 
 from .base import LocationBasedInfoBase
 from .type import Hemisphere, TimeType, SeasonType
+
+
+class _Interval:
+    """Interval class for internal purposes. Supposed to be used in Mapping classes.
+
+    Facilitates defining a comparable date interval by only passing the day and
+    month of the start and end date.
+    """
+
+    def __init__(self, a: Tuple[int, int], b: Tuple[int, int]):
+        # We use the year 4, which is a leap year, in order to be able to allow 29th Feb
+        # as date.
+        year = 4
+        self.start = date(year, a[1], a[0])
+        self.end = date(year, b[1], b[0])
+
+    def includes(self, date: date) -> bool:
+        """Return whether the given date is in the interval"""
+
+        return self.start <= date <= self.end
+
+
+# Just so we can use a shorter name when defining an _Interval.
+# So, a date interval can be defined by e.g. _I(a=(1, 1), b=(21, 6)).
+_I = _Interval
 
 
 class Mapping:
@@ -33,11 +58,21 @@ class Mapping:
 
     @lazy_property
     def inverse_mapping(self) -> Dict[TimeType, Tuple]:
-        print("running inverse_mapping lazy-load…")
         return {v: k for k, v in self.mapping.items()}
 
     def _is_in_season(self, time_type: TimeType) -> bool:
-        return self.date.month in self.inverse_mapping[time_type]
+        date_range = self.inverse_mapping[time_type]
+
+        if all(isinstance(month, int) for month in date_range):
+            return self.date.month in date_range
+        elif all(isinstance(item, _Interval) for item in date_range):
+            return any(self._is_in_interval(interval) for interval in date_range)
+        else:
+            return False
+
+    def _is_in_interval(self, interval: _Interval) -> bool:
+        current_date = self.date.date().replace(year=interval.start.year)
+        return interval.includes(current_date)
 
 
 class LocationDependentMapping(ABC, Mapping):
@@ -221,6 +256,53 @@ class CreeMapping(Mapping):
         """Return whether the given date is in Mikiskaw (Freeze-up)"""
 
         return self._is_in_season(TimeType.MIKISKAW)
+
+
+class HinduMapping(Mapping):
+    __mapping__ = {
+        (_I(a=(15, 3), b=(14, 5)),): TimeType.VASANTA,
+        (_I(a=(15, 5), b=(14, 7)),): TimeType.GREESHMA,
+        (_I(a=(15, 7), b=(14, 9)),): TimeType.VARSHA,
+        (_I(a=(15, 9), b=(14, 11)),): TimeType.SHARAD,
+        (_I(a=(15, 11), b=(31, 12)), _I(a=(1, 1), b=(14, 1))): TimeType.HEMANTA,
+        (_I(a=(15, 1), b=(14, 3)),): TimeType.SHISHIRA,
+    }
+
+    @lazy_property
+    def is_vasanta(self):
+        """Return whether the given date is in Vasanta (Spring)"""
+
+        return self._is_in_season(TimeType.VASANTA)
+
+    @lazy_property
+    def is_greeshma(self):
+        """Return whether the given date is in Greeshma (Summer)"""
+
+        return self._is_in_season(TimeType.GREESHMA)
+
+    @lazy_property
+    def is_varsha(self):
+        """Return whether the given date is in Varsha (Monsoon)"""
+
+        return self._is_in_season(TimeType.VARSHA)
+
+    @lazy_property
+    def is_sharad(self):
+        """Return whether the given date is in Sharad (Autumn)"""
+
+        return self._is_in_season(TimeType.SHARAD)
+
+    @lazy_property
+    def is_hemanta(self):
+        """Return whether the given date is in Hemanta (Early Winter)"""
+
+        return self._is_in_season(TimeType.HEMANTA)
+
+    @lazy_property
+    def is_shishira(self):
+        """Return whether the given date is in Shishira (Prevernal or Late Winter)"""
+
+        return self._is_in_season(TimeType.SHISHIRA)
 
 
 class SeasonInfo(LocationBasedInfoBase):
