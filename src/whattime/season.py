@@ -5,6 +5,8 @@ from datetime import datetime
 from typing import Set, Dict, Tuple, Type, Union
 from warnings import warn
 
+from lazy import lazy as lazy_property
+
 from .base import LocationBasedInfoBase
 from .type import Hemisphere, TimeType, SeasonType
 
@@ -27,14 +29,12 @@ class Mapping:
     @mapping.setter
     def mapping(self, value):
         self._mapping = value
-        self._inverse_mapping = None
+        lazy_property.invalidate(self, 'inverse_mapping')
 
-    @property
+    @lazy_property
     def inverse_mapping(self) -> Dict[TimeType, Tuple]:
-        if not self._inverse_mapping:
-            self._inverse_mapping = {v: k for k, v in self.mapping.items()}
-
-        return self._inverse_mapping
+        print("running inverse_mapping lazy-load…")
+        return {v: k for k, v in self.mapping.items()}
 
     def _is_in_season(self, time_type: TimeType) -> bool:
         return self.date.month in self.inverse_mapping[time_type]
@@ -78,25 +78,25 @@ class GregorianMapping(LocationDependentMapping):
         (9, 10, 11): TimeType.SPRING,  # Sep, Oct, Nov
     }
 
-    @property
+    @lazy_property
     def is_spring(self) -> bool:
         """Return whether the given date is in spring on the given hemisphere"""
 
         return self._is_in_season(TimeType.SPRING)
 
-    @property
+    @lazy_property
     def is_summer(self) -> bool:
         """Return whether the given date is in summer on the given hemisphere"""
 
         return self._is_in_season(TimeType.SUMMER)
 
-    @property
+    @lazy_property
     def is_autumn(self) -> bool:
         """Return whether the given date is in autumn on the given hemisphere"""
 
         return self._is_in_season(TimeType.AUTUMN)
 
-    @property
+    @lazy_property
     def is_winter(self) -> bool:
         """Return whether the given date is in winter on the given hemisphere"""
 
@@ -116,13 +116,13 @@ class TropicalMapping(LocationDependentMapping):
         (5, 6, 7, 8, 9, 10): TimeType.DRY_SEASON,  # May - Oct
     }
 
-    @property
+    @lazy_property
     def is_wet_season(self):
         """Return whether the given date is in the wet season"""
 
         return self._is_in_season(TimeType.WET_SEASON)
 
-    @property
+    @lazy_property
     def is_dry_season(self):
         """Return whether the given date is in the dry season"""
 
@@ -139,37 +139,37 @@ class NoongarMapping(Mapping):
         (10, 11): TimeType.KAMBARANG
     }
 
-    @property
+    @lazy_property
     def is_birak(self):
         """Return whether the given date is in Birak"""
 
         return self._is_in_season(TimeType.BIRAK)
 
-    @property
+    @lazy_property
     def is_bunuru(self):
         """Return whether the given date is in Bunuru"""
 
         return self._is_in_season(TimeType.BUNURU)
 
-    @property
+    @lazy_property
     def is_djeran(self):
         """Return whether the given date is in Djeran"""
 
         return self._is_in_season(TimeType.DJERAN)
 
-    @property
+    @lazy_property
     def is_makuru(self):
         """Return whether the given date is in Makuru"""
 
         return self._is_in_season(TimeType.MAKURU)
 
-    @property
+    @lazy_property
     def is_djilba(self):
         """Return whether the given date is in Djilba"""
 
         return self._is_in_season(TimeType.DJILBA)
 
-    @property
+    @lazy_property
     def is_kambarang(self):
         """Return whether the given date is in Kambarang"""
 
@@ -186,37 +186,37 @@ class CreeMapping(Mapping):
         (11, 12): TimeType.MIKISKAW
     }
 
-    @property
+    @lazy_property
     def is_pipon(self):
         """Return whether the given date is in Pipon (Winter)"""
 
         return self._is_in_season(TimeType.PIPON)
 
-    @property
+    @lazy_property
     def is_sekwun(self):
         """Return whether the given date is in Sekwun (Break-up)"""
 
         return self._is_in_season(TimeType.SEKWUN)
 
-    @property
+    @lazy_property
     def is_mithoskumin(self):
         """Return whether the given date is in Mithoskumin (Spring)"""
 
         return self._is_in_season(TimeType.MITHOSKUMIN)
 
-    @property
+    @lazy_property
     def is_nepin(self):
         """Return whether the given date is in Nepin (Summer)"""
 
         return self._is_in_season(TimeType.NEPIN)
 
-    @property
+    @lazy_property
     def is_tukwakin(self):
         """Return whether the given date is in Tukwakin (Autumn)"""
 
         return self._is_in_season(TimeType.TUKWAKIN)
 
-    @property
+    @lazy_property
     def is_mikiskaw(self):
         """Return whether the given date is in Mikiskaw (Freeze-up)"""
 
@@ -224,8 +224,6 @@ class CreeMapping(Mapping):
 
 
 class SeasonInfo(LocationBasedInfoBase):
-    __mapping__ = {}
-
     def __init__(self, date: datetime,
                  season_type: SeasonType = SeasonType.GREGORIAN,
                  hemisphere: Hemisphere = None):
@@ -247,22 +245,24 @@ class SeasonInfo(LocationBasedInfoBase):
             warn(message.format(self.season_type))
 
         def predicate(prop):
-            return inspect.isdatadescriptor and isinstance(prop, property)
+            return inspect.isdatadescriptor and isinstance(prop, lazy_property)
 
         properties = inspect.getmembers(self._mapping_class, predicate)
 
         for (name, _) in properties:
             setattr(self, name, getattr(mapping_object, name))
 
-        self.__mapping__.update(mapping_object.mapping)
+    @lazy_property
+    def __mapping__(self) -> Dict[Union[str, Tuple], TimeType]:
+        return self._mapping_object.mapping
 
-    @property
+    @lazy_property
     def _mapping_object(self) -> Mapping:
         kwargs = self._init_kwargs(self._mapping_class)
         return self._mapping_class(**kwargs)
 
-    @property
-    def _mapping_class(self) -> Type:
+    @lazy_property
+    def _mapping_class(self) -> Mapping:
         mapping_class_name = '{}Mapping'.format(self.season_type.value.capitalize())
         return getattr(sys.modules[__name__], mapping_class_name)
 
@@ -270,7 +270,7 @@ class SeasonInfo(LocationBasedInfoBase):
         args = inspect.getfullargspec(cls.__init__).args
         return {arg: self.__getattribute__(arg) for arg in args if arg != 'self'}
 
-    @property
+    @lazy_property
     def types(self) -> Set[TimeType]:
         """Return a set of fitting time types for the given datetime"""
 

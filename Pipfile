@@ -10,3 +10,6 @@ pytest = "*"
 pytest-random = "*"
 mypy = "*"
 pytest-cov = "*"
+
+[packages]
+lazy = "*"
