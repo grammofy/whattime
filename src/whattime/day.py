@@ -1,13 +1,15 @@
 from datetime import datetime
 from typing import Set, Dict, Tuple
 
+from lazy import lazy as lazy_property
+
 from .base import InfoBase
 from .type import TimeType
 
 
 class DayTimeInfo(InfoBase):
 
-    @property
+    @lazy_property
     def __mapping__(self) -> Dict[Tuple, TimeType]:
         return {
             (0, 1, 2, 3, 4, 23): TimeType.NIGHT,
@@ -18,11 +20,11 @@ class DayTimeInfo(InfoBase):
             (18, 19, 20, 21, 22): TimeType.EVENING
         }
 
-    @property
+    @lazy_property
     def __inverse_mapping__(self) -> Dict[TimeType, Tuple]:
         return {v: k for k, v in self.__mapping__.items()}
 
-    @property
+    @lazy_property
     def types(self) -> Set[TimeType]:
         """Return a set of fitting time types for the given datetime"""
 
@@ -37,37 +39,37 @@ class DayTimeInfo(InfoBase):
 
         return self._types
 
-    @property
+    @lazy_property
     def is_morning(self) -> bool:
         """Return whether the given datetime is in the morning"""
 
         return self._is_in_daytime(TimeType.MORNING)
 
-    @property
+    @lazy_property
     def is_midmorning(self) -> bool:
         """Return whether the given datetime is in the midmorning"""
 
         return self._is_in_daytime(TimeType.MIDMORNING)
 
-    @property
+    @lazy_property
     def is_noon(self) -> bool:
         """Return whether the given datetime is at noon"""
 
         return self._is_in_daytime(TimeType.NOON)
 
-    @property
+    @lazy_property
     def is_afternoon(self) -> bool:
         """Return whether the given datetime is in the afternoon"""
 
         return self._is_in_daytime(TimeType.AFTERNOON)
 
-    @property
+    @lazy_property
     def is_evening(self) -> bool:
         """Return whether the given datetime is in the evening"""
 
         return self._is_in_daytime(TimeType.EVENING)
 
-    @property
+    @lazy_property
     def is_night(self) -> bool:
         """Return whether the given datetime is in the night"""
 

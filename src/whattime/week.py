@@ -1,12 +1,14 @@
 from datetime import datetime
 from typing import Set, Dict
 
+from lazy import lazy as lazy_property
+
 from .base import InfoBase
 from .type import TimeType
 
 
 class WeekInfo(InfoBase):
-    @property
+    @lazy_property
     def __mapping__(self) -> Dict[str, TimeType]:
         return {
             'is_weekend': TimeType.WEEKEND,
@@ -20,7 +22,7 @@ class WeekInfo(InfoBase):
             'is_sunday': TimeType.SUNDAY
         }
 
-    @property
+    @lazy_property
     def types(self) -> Set[TimeType]:
         """Return a set of fitting time types for the given datetime"""
 
@@ -35,54 +37,54 @@ class WeekInfo(InfoBase):
 
         return self._types
 
-    @property
+    @lazy_property
     def is_weekend(self) -> bool:
         """Return whether the given datetime is a weekend day"""
 
         return self.is_saturday or self.is_sunday
 
-    @property
+    @lazy_property
     def is_weekday(self) -> bool:
         """Return whether the given datetime is a weekday"""
 
         return not self.is_weekend
 
-    @property
+    @lazy_property
     def is_monday(self) -> bool:
         """Return whether the given datetime is a Monday"""
 
         return self.date.isoweekday() == 1
 
-    @property
+    @lazy_property
     def is_tuesday(self) -> bool:
         """Return whether the given datetime is a Tuesday"""
 
         return self.date.isoweekday() == 2
 
-    @property
+    @lazy_property
     def is_wednesday(self) -> bool:
         """Return whether the given datetime is a Monday"""
 
         return self.date.isoweekday() == 3
 
-    @property
+    @lazy_property
     def is_thursday(self) -> bool:
         """Return whether the given datetime is a Thursday"""
         return self.date.isoweekday() == 4
 
-    @property
+    @lazy_property
     def is_friday(self) -> bool:
         """Return whether the given datetime is a Friday"""
 
         return self.date.isoweekday() == 5
 
-    @property
+    @lazy_property
     def is_saturday(self) -> bool:
         """Return whether the given datetime is a Saturday"""
 
         return self.date.isoweekday() == 6
 
-    @property
+    @lazy_property
     def is_sunday(self) -> bool:
         """Return whether the given datetime is a Sunday"""
 

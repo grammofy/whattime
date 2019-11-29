@@ -2,6 +2,8 @@ import inspect
 from datetime import datetime
 from typing import Set, Dict, Type, Union, Tuple
 
+from lazy import lazy as lazy_property
+
 from .day import DayTimeInfo, day_time_info
 from .season import SeasonInfo, season_info
 from .type import TimeType, Hemisphere, SeasonType
@@ -11,7 +13,7 @@ from .week import WeekInfo, week_info
 class TimeInfo(DayTimeInfo, WeekInfo, SeasonInfo):
     _mapping = {}
 
-    @property
+    @lazy_property
     def __mapping__(self) -> Dict[Union[str, Tuple], TimeType]:
         if not self._mapping:
             for cls in TimeInfo.__bases__:
@@ -20,7 +22,7 @@ class TimeInfo(DayTimeInfo, WeekInfo, SeasonInfo):
 
         return self._mapping
 
-    @property
+    @lazy_property
     def types(self) -> Set[TimeType]:
         if not self._types:
             for cls in TimeInfo.__bases__:
