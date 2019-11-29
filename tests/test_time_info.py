@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from whattime import Hemisphere, TimeType, whattime, SeasonType
+from whattime import Hemisphere, TimeType, SeasonType
 from whattime.utils import TimeInfo
 
 
