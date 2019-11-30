@@ -37,12 +37,13 @@ _I = _Interval
 
 
 class Mapping:
+    """Base class for all season mapping classes"""
+
     __mapping__ = {}
 
     def __init__(self, date: datetime):
         self.date = date
         self._mapping = None
-        self._inverse_mapping = None
 
     @property
     def mapping(self) -> Dict[Tuple, TimeType]:
@@ -70,6 +71,8 @@ class Mapping:
 
 
 class LocationDependentMapping(ABC, Mapping):
+    """Base class for Mappings that depend on hemisphere location"""
+
     @property
     @abstractmethod
     def __northern_mapping__(self):
@@ -116,7 +119,6 @@ class GregorianMapping(LocationDependentMapping):
     @lazy_property
     def is_summer(self) -> bool:
         """Return whether the given date is in summer on the given hemisphere"""
-
         return self.is_of_time_type(TimeType.SUMMER)
 
     @lazy_property
@@ -159,13 +161,15 @@ class TropicalMapping(LocationDependentMapping):
 
 
 class NoongarMapping(Mapping):
+    """Mapping for Noongar seasons (South-West Western Australia)"""
+
     __mapping__ = {
-        (_I((1, 12), (31, 12)), _I((1, 1), (31, 1)),): TimeType.BIRAK,
-        (_I((1, 2), (31, 3)),): TimeType.BUNURU,
-        (_I((1, 4), (31, 5)),): TimeType.DJERAN,
-        (_I((1, 6), (31, 7)),): TimeType.MAKURU,
-        (_I((1, 8), (30, 9)),): TimeType.DJILBA,
-        (_I((1, 10), (30, 11)),): TimeType.KAMBARANG
+        (_I((1, 12), (31, 12)), _I((1, 1), (31, 1)),): TimeType.BIRAK,  # Dec, Jan
+        (_I((1, 2), (31, 3)),): TimeType.BUNURU,  # Feb, Mar
+        (_I((1, 4), (31, 5)),): TimeType.DJERAN,  # Apr, May
+        (_I((1, 6), (31, 7)),): TimeType.MAKURU,  # Jun, Jul
+        (_I((1, 8), (30, 9)),): TimeType.DJILBA,  # Aug, Sep
+        (_I((1, 10), (30, 11)),): TimeType.KAMBARANG  # Oct, Nov
     }
 
     @lazy_property
@@ -206,13 +210,15 @@ class NoongarMapping(Mapping):
 
 
 class CreeMapping(Mapping):
+    """Mapping for Cree seasons (North America)"""
+
     __mapping__ = {
-        (_I((1, 1), (29, 2)),): TimeType.PIPON,
-        (_I((1, 3), (30, 4)),): TimeType.SEKWUN,
-        (_I((1, 5), (30, 6)),): TimeType.MITHOSKUMIN,
-        (_I((1, 7), (31, 8)),): TimeType.NEPIN,
-        (_I((1, 9), (31, 10)),): TimeType.TUKWAKIN,
-        (_I((1, 11), (31, 12)),): TimeType.MIKISKAW
+        (_I((1, 1), (29, 2)),): TimeType.PIPON,  # Jan, Feb
+        (_I((1, 3), (30, 4)),): TimeType.SEKWUN,  # Mar, Apr
+        (_I((1, 5), (30, 6)),): TimeType.MITHOSKUMIN,  # May, Jun
+        (_I((1, 7), (31, 8)),): TimeType.NEPIN,  # Jul, Aug
+        (_I((1, 9), (31, 10)),): TimeType.TUKWAKIN,  # Sep, Oct
+        (_I((1, 11), (31, 12)),): TimeType.MIKISKAW  # Nov, Dec
     }
 
     @lazy_property
@@ -253,13 +259,15 @@ class CreeMapping(Mapping):
 
 
 class HinduMapping(Mapping):
+    """Mapping for Hindu seasons (tropical and subtropical India)"""
+
     __mapping__ = {
-        (_I((15, 3), (14, 5)),): TimeType.VASANTA,
-        (_I((15, 5), (14, 7)),): TimeType.GREESHMA,
-        (_I((15, 7), (14, 9)),): TimeType.VARSHA,
-        (_I((15, 9), (14, 11)),): TimeType.SHARAD,
-        (_I((15, 11), (31, 12)), _I((1, 1), (14, 1))): TimeType.HEMANTA,
-        (_I((15, 1), (14, 3)),): TimeType.SHISHIRA,
+        (_I((15, 3), (14, 5)),): TimeType.VASANTA,  # mid-Mar - mid-May
+        (_I((15, 5), (14, 7)),): TimeType.GREESHMA,  # mid-May - mid-Jul
+        (_I((15, 7), (14, 9)),): TimeType.VARSHA,  # mid-Jul - mid-Sep
+        (_I((15, 9), (14, 11)),): TimeType.SHARAD,  # mid-Sep - mid-Nov
+        (_I((15, 11), (31, 12)), _I((1, 1), (14, 1))): TimeType.HEMANTA,  # mid-Nov - mid-Jan
+        (_I((15, 1), (14, 3)),): TimeType.SHISHIRA,  # mid-Jan - mid-Mar
     }
 
     @lazy_property
